@@ -73,7 +73,7 @@ const UploadModal = (props: { onClose; visible }) => {
       setClz("fade-in")
     }
   }, [props.visible])
-  useLayoutEffect(() => {
+  useEffect(() => {
     setDomReady(true)
   }, [])
   return (

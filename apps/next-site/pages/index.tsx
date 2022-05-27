@@ -20,3 +20,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // console.log(authToken,user,'=======')
   return { props: { user: authToken ? user.props : null } }
 }
+
+// todo infura ipfs
