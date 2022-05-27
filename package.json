@@ -10,7 +10,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "site-dev": "npm run dev --workspace=apps/next-site",
-    "build":"npm run build --workspace=apps/next-site && npm run start --workspace=apps/next-site"
+    "build":"npm run build --workspace=apps/next-site ",
+    "start": "npm run start --workspace=apps/next-site"
   },
   "author": "",
   "license": "ISC",
