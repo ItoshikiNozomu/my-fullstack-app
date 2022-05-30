@@ -41,7 +41,7 @@ const Home = (props: { user?: UserProps }) => {
 
   return (
     <StyledContainer>
-      <SiteHead></SiteHead>
+      
       <div>
         Home
         {user && (

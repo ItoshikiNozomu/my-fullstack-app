@@ -1,5 +1,14 @@
-import Document, { DocumentContext, DocumentInitialProps } from 'next/document'
-import { ServerStyleSheet } from 'styled-components'
+import { version } from "antd"
+import Document, {
+  DocumentContext,
+  DocumentInitialProps,
+  Html,
+  Main,
+  NextScript,
+  Head
+} from "next/document"
+import { ServerStyleSheet } from "styled-components"
+import SiteHead from "../common/components/SiteHead"
 
 export default class MyDocument extends Document {
   static async getInitialProps(
@@ -28,5 +37,22 @@ export default class MyDocument extends Document {
     } finally {
       sheet.seal()
     }
+  }
+  render() {
+    return (
+      <Html>
+        <Head>
+          <title>my site</title>
+          <link
+            rel="stylesheet"
+            href={`https://cdn.bootcdn.net/ajax/libs/antd/${version}/antd.compact.css`}
+          />
+        </Head>
+        <body>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    )
   }
 }

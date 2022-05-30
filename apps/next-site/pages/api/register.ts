@@ -3,6 +3,7 @@ import { STATUS_CODES } from "http"
 import { NextApiHandler } from "next"
 
 import User from "../../models/User"
+import getLogger from "../../utils/getLogger"
 import { setCookieString } from "../../utils/httpUtils"
 
 const handler: NextApiHandler = async (req, res) => {
@@ -25,6 +26,7 @@ const handler: NextApiHandler = async (req, res) => {
     })
   } catch (e) {
     // await User.removeUserById(u.props.userId)
+    getLogger().error(String(e))
     res.status(500)
     res.json({
       message: "register failed",

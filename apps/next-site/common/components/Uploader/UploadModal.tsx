@@ -1,6 +1,9 @@
 import { useEffect, useLayoutEffect, useState } from "react"
 import { createPortal } from "react-dom"
 import styled from "styled-components"
+import { Upload, message } from "antd"
+import { InboxOutlined } from "@ant-design/icons"
+import type { UploadProps } from "antd"
 
 const StyledContainer = styled.div`
   position: absolute;
@@ -63,6 +66,26 @@ const StyledBox = styled.div`
   }
 `
 
+const uploadProps: UploadProps = {
+  name: "file",
+  multiple: true,
+  action: "https://www.mocky.io/v2/5cc8019d300000980a055e76",
+  onChange(info) {
+    const { status } = info.file
+    if (status !== "uploading") {
+      console.log(info.file, info.fileList)
+    }
+    if (status === "done") {
+      message.success(`${info.file.name} file uploaded successfully.`)
+    } else if (status === "error") {
+      message.error(`${info.file.name} file upload failed.`)
+    }
+  },
+  onDrop(e) {
+    console.log("Dropped files", e.dataTransfer.files)
+  },
+}
+
 const UploadModal = (props: { onClose; visible }) => {
   const [visible, setVisible] = useState(false)
   const [domReady, setDomReady] = useState(false)
@@ -87,20 +110,23 @@ const UploadModal = (props: { onClose; visible }) => {
         }}
         className={clz}
         onClick={(e) => {
-          if(e.target!==e.currentTarget)return
+          if (e.target !== e.currentTarget) return
           setClz("fade-out")
         }}
       >
         <StyledBox>
-          <div className="input-wrapper">
-            <label htmlFor="input-file">xxx</label>
-            <input
-              type="file"
-              accept="image/*"
-              className="custom-file-input"
-              id="input-file"
-            />
-          </div>
+          <Upload.Dragger {...uploadProps}>
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">
+              Click or drag file to this area to upload
+            </p>
+            <p className="ant-upload-hint">
+              Support for a single or bulk upload. Strictly prohibit from
+              uploading company data or other band files
+            </p>
+          </Upload.Dragger>
         </StyledBox>
       </StyledContainer>,
       document.body

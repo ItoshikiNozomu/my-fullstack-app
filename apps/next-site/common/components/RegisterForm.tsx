@@ -2,6 +2,8 @@ import React from "react"
 import { Form, Input, Button, Checkbox } from "antd"
 import { UserOutlined, LockOutlined } from "@ant-design/icons"
 import { useForm } from "antd/lib/form/Form"
+import wrappedFetch from "../../utils/wrappedFetch"
+import getLogger from "../../utils/getLogger"
 
 const App: React.FC = () => {
   const onFinish = (values: any) => {
@@ -41,15 +43,17 @@ const App: React.FC = () => {
         <Button
           onClick={async (e) => {
             //  console.log(form.getFieldsValue())
-            const ret = await window
-              .fetch("/api/register", {
+            let ret
+            try {
+              ret = await wrappedFetch("/api/register", {
                 method: "POST",
                 body: JSON.stringify(form.getFieldsValue()),
-              })
-              .then((r) => r.json())
-
-            localStorage.setItem("token", ret.token)
-            window.close()
+              }).then((r) => r.json())
+              localStorage.setItem("token", ret.token)
+              window.location.replace("/")
+            } catch (e) {
+              console.warn(e)
+            }
           }}
           type="primary"
           htmlType="submit"
