@@ -13,12 +13,13 @@ const StyledContainer = styled.div`
   right: 0;
   z-index: 100;
   // background: rgba(0, 0, 0, 0);
+  background: rgba(0, 0, 0, 0.6);
   display: none;
   justify-content: center;
   align-items: center;
   &.fade-out {
     display: flex;
-    background: rgba(0, 0, 0, 0.6);
+    
     animation: 0.3s fadeOut;
     animation-delay: 0.1s;
     animation-fill-mode: forwards;
@@ -28,21 +29,22 @@ const StyledContainer = styled.div`
     animation: 0.3s fadeIn;
     animation-delay: 0.1s;
     animation-fill-mode: forwards;
+    opacity:0;
   }
   @keyframes fadeIn {
     0% {
-      background: rgba(0, 0, 0, 0);
+      opacity:0
     }
     100% {
-      background: rgba(0, 0, 0, 0.6);
+      opacity:1;
     }
   }
   @keyframes fadeOut {
     0% {
-      background: rgba(0, 0, 0, 0.6);
+      opacity:1
     }
     100% {
-      background: rgba(0, 0, 0, 0);
+      opacity:0
     }
     // 100%{
     //   display:none;
@@ -92,9 +94,11 @@ const UploadModal = (props: { onClose; visible }) => {
   const [clz, setClz] = useState("")
   useEffect(() => {
     setVisible(props.visible)
+    // debugger
     if (props.visible) {
       setClz("fade-in")
     }
+    
   }, [props.visible])
   useEffect(() => {
     setDomReady(true)
@@ -106,12 +110,14 @@ const UploadModal = (props: { onClose; visible }) => {
         onAnimationEnd={(e) => {
           if (e.animationName === "fadeOut") {
             setClz("")
+            props.onClose()
           }
         }}
         className={clz}
         onClick={(e) => {
           if (e.target !== e.currentTarget) return
           setClz("fade-out")
+          
         }}
       >
         <StyledBox>

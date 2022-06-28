@@ -42,7 +42,7 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <title>my site</title>
+         
           <link
             rel="stylesheet"
             href={`https://cdn.bootcdn.net/ajax/libs/antd/${version}/antd.compact.css`}

@@ -1,6 +1,7 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { AuthStatus, ReduxState } from "../../store"
+import checkAuth from "../../utils/checkAuth"
 import useLogin from "./useLogin"
 
 export default (props?: { needLogin?; needVerify? }) => {
@@ -24,34 +25,20 @@ export default (props?: { needLogin?; needVerify? }) => {
       },
     })
     localStorage.removeItem("token")
-    
   }
   //   const { showPopup } = useLogin()
   useEffect(() => {
-    const token = localStorage.getItem("token")
-    if (token) {
-      //pending
-      // dispatch()
-      if (!props.needVerify) {
-        dispatch({
-          payload: {
-            authToken:token,
-            authStatus: "NOT_VERIFIED",
-          },
-
-          type: "authUpdate",
-        })
-      } else {
-        // todo verify the token
-      }
-    } else {
+    ;(async () => {
+      const token = localStorage.getItem("token")
+      const { status } = await checkAuth(token)
       dispatch({
         type: "authUpdate",
         payload: {
-          authStatus: "ANONYMOUS",
+          authStatus: status,
+          token: status !== "ANONYMOUS" ? token : "",
         },
       })
-    }
+    })()
   }, [])
 
   useEffect(() => {
