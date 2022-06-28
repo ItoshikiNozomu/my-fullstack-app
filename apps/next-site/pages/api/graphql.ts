@@ -69,8 +69,12 @@ export default async (req, res: NextApiResponse) => {
     res.end()
     return false
   }
-
-  handler(req, res)
+  try{
+    await handler(req, res)
+  }catch(e){
+    console.warn(e)
+  }
+  
 }
 
 

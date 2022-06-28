@@ -8,6 +8,7 @@ import { decode } from "jsonwebtoken"
 import Uploader from "../components/Uploader/Uploader"
 import SiteHead from "../components/SiteHead"
 import styled from 'styled-components'
+import MyImgList from "../components/MyImgList"
 
 const StyledContainer = styled.div`
 padding:20px;
@@ -61,6 +62,7 @@ const Home = (props: { user?: UserProps }) => {
         )}
       </div>
       <div>
+        <MyImgList></MyImgList>
         <Uploader></Uploader>
       </div>
     </StyledContainer>
