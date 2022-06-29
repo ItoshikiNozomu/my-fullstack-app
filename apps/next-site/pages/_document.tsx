@@ -5,11 +5,16 @@ import Document, {
   Html,
   Main,
   NextScript,
-  Head
+  Head,
 } from "next/document"
+import Script from "next/script"
 import { ServerStyleSheet } from "styled-components"
 import SiteHead from "../common/components/SiteHead"
 
+
+const infuraAuth = Buffer.from(
+  process.env.IPFS_PROJECT_ID + ":" + process.env.IPFS_SECRET
+).toString("base64")
 export default class MyDocument extends Document {
   static async getInitialProps(
     ctx: DocumentContext
@@ -42,7 +47,12 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
-         
+          <script
+            id="auth_injection"
+            dangerouslySetInnerHTML={{
+              __html: `window.infuraAuth = '${infuraAuth}'`,
+            }}
+          ></script>
           <link
             rel="stylesheet"
             href={`https://cdn.bootcdn.net/ajax/libs/antd/${version}/antd.compact.css`}

@@ -6,7 +6,7 @@ import Home from "../common/pages/Home"
 import SiteHead from "../common/components/SiteHead"
 
 
-export default ()=><Home></Home> 
+export default ({user})=><Home user={user}></Home> 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // console.log(context)
@@ -17,7 +17,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   )
 
   const user = User.fromToken(authToken as string)
-  // console.log(authToken,user,'=======')
+  console.log(authToken,user,'=======')
   return { props: { user: authToken ? user.props : null } }
 }
 
