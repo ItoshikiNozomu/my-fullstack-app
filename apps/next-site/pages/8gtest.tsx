@@ -1,3 +1,5 @@
+import LabTest from "../common/pages/LabTest/LabTest"
+
 export default ()=>{
-    return <>8gtest page</>
+    return <LabTest></LabTest>
 }

@@ -4,10 +4,10 @@ const SiteHead = ({ children }: { children?: React.ReactNode }) => {
   return (
     <Head>
       <title>my site</title>
-      <link
+      {/* <link
         rel="stylesheet"
         href={`https://cdn.bootcdn.net/ajax/libs/antd/${version}/antd.compact.css`}
-      />
+      /> */}
       {children}
     </Head>
   )

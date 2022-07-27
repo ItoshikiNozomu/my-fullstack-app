@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.1",
+    "@tinymce/tinymce-react": "^4.1.0",
     "antd": "^4.20.5",
     "apollo-server-micro": "^3.9.0",
     "cors": "^2.8.5",
