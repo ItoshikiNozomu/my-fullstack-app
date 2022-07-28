@@ -1,5 +1,6 @@
-import { CSSProperties, ReactNode } from "react"
+import { CSSProperties, ReactNode, useContext } from "react"
 import styled from "styled-components"
+import { ctx } from "./LabTest"
 
 import pen from "./resources/pencil.svg"
 import trashCan from "./resources/trash-can.svg"
@@ -23,7 +24,7 @@ const Container = styled.div`
       background: rgba(0, 0, 0, 0.1);
       z-index: -1;
     }
-    margin-bottom:25px;
+    margin-bottom: 25px;
   }
   .title {
     background: radial-gradient(
@@ -57,9 +58,9 @@ const Container = styled.div`
     line-height: 18px;
     padding: 4px 16px;
     cursor: pointer;
-    &.disabled{
-      cursor:unset;
-      background: #C4C4C4;
+    &.disabled {
+      cursor: unset;
+      background: #c4c4c4;
     }
   }
   .del-btn {
@@ -71,13 +72,11 @@ const Container = styled.div`
     margin-left: 6px;
     border-radius: 100%;
     cursor: pointer;
-    background:#FF002E;
-    &.disabled{
-      cursor:unset;
+    background: #ff002e;
+    &.disabled {
+      cursor: unset;
       background: #c4c4c4;
     }
-    
-    
   }
   .post-date {
     font-family: "Poppins";
@@ -90,8 +89,8 @@ const Container = styled.div`
     /* Style */
 
     color: #818181;
-    margin-top:24px;
-    margin-left:25px;
+    margin-top: 24px;
+    margin-left: 25px;
   }
   margin-top: 60px;
 `
@@ -101,25 +100,35 @@ export default ({
   containerStyle,
   children,
   postDate,
-  canEdit=true,
-  canDelete=true
+  canEdit = true,
+  canDelete = true,
 }: {
   title
   containerStyle?: CSSProperties
   children: ReactNode
-  postDate,
+  postDate
   canEdit?
   canDelete?
 }) => {
+  const { update, state } = useContext(ctx)
+
   return (
     <Container className="post-container" style={containerStyle}>
       <div className="title-and-actions">
         <div className="title">{title}</div>
         <div className="actions">
-          <span className={`edit-btn ${canEdit?'':'disabled'}`}>
+          <span
+            className={`edit-btn ${canEdit ? "" : "disabled"}`}
+            onClick={() => {
+              update({
+                ...state,
+                editingPostTitle: title,
+              })
+            }}
+          >
             <img src={pen.src} alt="" style={{ marginRight: "6px" }} /> Edit
           </span>
-          <span className={`del-btn ${canDelete?'':'disabled'}`}>
+          <span className={`del-btn ${canDelete ? "" : "disabled"}`}>
             <img src={trashCan.src} alt="" />
           </span>
           {/* <img src={trash.src} alt="" /> */}

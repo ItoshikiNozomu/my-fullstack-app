@@ -24,7 +24,7 @@ const PageContainer = styled.div`
   * {
     box-sizing: border-box;
   }
-  padding-bottom:364px;
+  padding-bottom: 364px;
 `
 
 const Icon = styled.i``
@@ -222,15 +222,16 @@ const BtnRow = styled.div`
   }
 `
 
-const ctx = createContext({
+export const ctx = createContext({
   update: (newState) => {},
   state: {
     posts: [],
+    editingPostTitle: "",
   },
 })
 
 const App = () => {
-  const posts = useContext(ctx).state.posts
+  const { posts, editingPostTitle } = useContext(ctx).state
   return (
     <PageContainer>
       <HDNav className="hd-nav">
@@ -268,48 +269,14 @@ const App = () => {
       </TabSwitcher>
       <NewPostForm></NewPostForm>
       {posts.map((e) => {
-        return (
+        return e.title === editingPostTitle ? (
+          <EditingPostForm postData={e}></EditingPostForm>
+        ) : (
           <PostContainer title={e.title} postDate={e.postDate} key={e.title}>
             <SimplePost content={e.content}></SimplePost>
           </PostContainer>
         )
       })}
-      <Editor
-        initialValue={`
-        <p>this is the pre saved post content</p>
-        `}
-        renderAbove={() => (
-          <>
-            <h5>Eidt Post</h5>
-            <InputWrapper style={{ marginTop: "24px" }}>
-              <input
-                placeholder="Nunc eu quam sit amet justo elementum mollis"
-                className="real-input"
-                value={"this is the title to be changed"}
-              />
-            </InputWrapper>
-          </>
-        )}
-        renderBellow={() => (
-          <BtnRow style={{ marginTop: "24px" }}>
-            <DoPostButton stlyle={{ marginTop: 0 }}>
-              <img src={checkBold.src} alt="" style={{ marginRight: "10px" }} />{" "}
-              Save
-            </DoPostButton>
-            <div className="pull-right btn-cancel">
-              <img style={{ marginRight: "9px" }} src={windowClose.src}></img>{" "}
-              Cancel
-            </div>
-          </BtnRow>
-        )}
-        wrapperStyle={{
-          padding: "24px",
-          marginTop: "80px",
-          boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.15)",
-          borderRadius: "5px",
-          overflow: "hidden",
-        }}
-      ></Editor>
 
       <PostContainer
         postDate={"May 3, 2022 16:22"}
@@ -406,9 +373,87 @@ const NewPostForm = () => {
   )
 }
 
+const EditingPostForm = ({ postData }) => {
+  const { state, update } = useContext(ctx)
+  const newPostEditorRef = useRef()
+  const [titleValue, setTitleValue] = useState(postData.title)
+  return (
+    <Editor
+      onEditorInit={(editor) => {
+        newPostEditorRef.current = editor
+      }}
+      initialValue={postData.content}
+      renderAbove={() => (
+        <>
+          <h5>Eidt Post</h5>
+          <InputWrapper style={{ marginTop: "24px" }}>
+            <input
+              placeholder="Nunc eu quam sit amet justo elementum mollis"
+              className="real-input"
+              value={titleValue}
+              onChange={(e) => {
+                setTitleValue(e.target.value)
+              }}
+            />
+          </InputWrapper>
+        </>
+      )}
+      renderBellow={() => (
+        <BtnRow style={{ marginTop: "24px" }}>
+          <DoPostButton
+            stlyle={{ marginTop: 0 }}
+            onClick={() => {
+              let post = state.posts.find((e) => e.title === postData.title)
+              post.title = titleValue
+              // @ts-ignore
+              post.content = newPostEditorRef.current.getContent()
+              update({
+                posts: [...state.posts],
+              })
+            }}
+          >
+            <img src={checkBold.src} alt="" style={{ marginRight: "10px" }} />
+            Save
+          </DoPostButton>
+          <div
+            className="pull-right btn-cancel"
+            onClick={() => {
+              update({
+                ...state,
+                editingPostTitle: "",
+              })
+            }}
+          >
+            <img style={{ marginRight: "9px" }} src={windowClose.src}></img>
+            Cancel
+          </div>
+        </BtnRow>
+      )}
+      wrapperStyle={{
+        padding: "24px",
+        marginTop: "80px",
+        boxShadow: "0px 4px 14px rgba(0, 0, 0, 0.15)",
+        borderRadius: "5px",
+        overflow: "hidden",
+      }}
+    ></Editor>
+  )
+}
+
 export default () => {
   const [ctxState, set] = useState({
-    posts: [],
+    editingPostTitle: "my post",
+    posts: [
+      {
+        postDate: format(new Date(), "MMM d, yyyy HH:mm"),
+        title: "my post",
+        // @ts-ignore
+        content: `<p>Maecenas quam nunc, sagittis non condimentum at, rutrum sit amet eros. Fusce rutrum, lectus in blandit sagittis, mi tortor ullamcorper mi, vitae vestibulum libero quam a nisi. In eu mauris et neque sodales porta eu eget dui. Nunc eu quam sit amet justo elementum mollis. </p>
+      <p>Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Sed laoreet metus nulla, in gravida urna rhoncus in. Proin laoreet semper tortor ac posuere. </p>
+      
+      `,
+      },
+    ],
   })
   return (
     <ctx.Provider
