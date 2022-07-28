@@ -17,7 +17,7 @@ const Container = styled.div`
       position: absolute;
       content: " ";
       left: 10px;
-      right: 30px;
+      right: 10px;
       top: 50%;
       height: 1px;
       background: rgba(0, 0, 0, 0.1);

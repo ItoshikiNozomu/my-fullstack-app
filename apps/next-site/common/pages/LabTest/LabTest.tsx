@@ -12,10 +12,11 @@ import checkBold from "./resources/check-bold.svg"
 import windowClose from "./resources/window-close.svg"
 import PostContainer from "./PostContainer"
 import Post1 from "./Post1"
+import { useRef } from "react"
 
 const PageContainer = styled.div`
-    width: 1440px;
-    margin: auto;
+  width: 1440px;
+  margin: auto;
   font-family: "Poppins";
   * {
     box-sizing: border-box;
@@ -218,6 +219,7 @@ const BtnRow = styled.div`
 `
 
 export default () => {
+  const newPostEditorRef = useRef()
   return (
     <PageContainer>
       <HDNav className="hd-nav">
@@ -254,13 +256,21 @@ export default () => {
         </div>
       </TabSwitcher>
       <Editor
+      onEditorInit={(editor) => {
+        newPostEditorRef.current = editor
+      }}
         renderAbove={() => (
           <InputWrapper>
             <input placeholder="Input post title" className="real-input" />
           </InputWrapper>
         )}
         renderBellow={() => (
-          <DoPostButton style={{ marginTop: "24px" }}>
+          <DoPostButton
+          onClick={()=>{
+            console.log(newPostEditorRef.current.getContent())
+            
+          }}
+          style={{ marginTop: "24px" }}>
             <img src={checkBold.src} alt="" style={{ marginRight: "10px" }} />{" "}
             Post
           </DoPostButton>
@@ -268,6 +278,7 @@ export default () => {
       ></Editor>
 
       <Editor
+        
         renderAbove={() => (
           <>
             <h5>Eidt Post</h5>
