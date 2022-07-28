@@ -46,3 +46,16 @@ export default () => {
     </PostContainer>
   )
 }
+
+export const SimplePost = ({ content }) => {
+  return (
+    <PostContainer>
+      <div
+        className="html-container"
+        dangerouslySetInnerHTML={{
+          __html: content,
+        }}
+      ></div>
+    </PostContainer>
+  )
+}

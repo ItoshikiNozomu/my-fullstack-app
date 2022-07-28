@@ -12,9 +12,10 @@ import checkBold from "./resources/check-bold.svg"
 import windowClose from "./resources/window-close.svg"
 import PostContainer from "./PostContainer"
 import Post1 from "./Post1"
-import { useRef } from "react"
+import { createContext, useContext, useRef, useState } from "react"
 import Post2 from "./Post2"
-import Post3 from "./Post3"
+import Post3, { SimplePost } from "./Post3"
+import { format } from "date-fns"
 
 const PageContainer = styled.div`
   width: 1440px;
@@ -220,8 +221,15 @@ const BtnRow = styled.div`
   }
 `
 
-export default () => {
-  const newPostEditorRef = useRef()
+const ctx = createContext({
+  update: (newState) => {},
+  state: {
+    posts: [],
+  },
+})
+
+const App = () => {
+  const posts = useContext(ctx).state.posts
   return (
     <PageContainer>
       <HDNav className="hd-nav">
@@ -257,30 +265,18 @@ export default () => {
           Posts <span className="count-tip">4</span>
         </div>
       </TabSwitcher>
+      <NewPostForm></NewPostForm>
+      {posts.map((e) => {
+        return (
+          <PostContainer title={e.title} postDate={e.postDate} key={e.title}>
+            <SimplePost content={e.content}></SimplePost>
+          </PostContainer>
+        )
+      })}
       <Editor
-        onEditorInit={(editor) => {
-          newPostEditorRef.current = editor
-        }}
-        renderAbove={() => (
-          <InputWrapper>
-            <input placeholder="Input post title" className="real-input" />
-          </InputWrapper>
-        )}
-        renderBellow={() => (
-          <DoPostButton
-            onClick={() => {
-              // @ts-ignore
-              console.log(newPostEditorRef.current.getContent())
-            }}
-            style={{ marginTop: "24px" }}
-          >
-            <img src={checkBold.src} alt="" style={{ marginRight: "10px" }} />{" "}
-            Post
-          </DoPostButton>
-        )}
-      ></Editor>
-
-      <Editor
+        initialValue={`
+        <p>this is the pre saved post content</p>
+        `}
         renderAbove={() => (
           <>
             <h5>Eidt Post</h5>
@@ -288,6 +284,7 @@ export default () => {
               <input
                 placeholder="Nunc eu quam sit amet justo elementum mollis"
                 className="real-input"
+                value={"this is the title to be changed"}
               />
             </InputWrapper>
           </>
@@ -312,11 +309,9 @@ export default () => {
           overflow: "hidden",
         }}
       ></Editor>
+
       <PostContainer
         postDate={"May 3, 2022 16:22"}
-        containerStyle={{
-          marginTop: "60px",
-        }}
         title="Orci varius natoque penatibus et magnis"
         canDelete={false}
       >
@@ -338,5 +333,92 @@ export default () => {
         <Post3></Post3>
       </PostContainer>
     </PageContainer>
+  )
+}
+
+const NewPostForm = () => {
+  const newPostEditorRef = useRef()
+  const [btnStatus, setBtnStatus] = useState("")
+  const [titleValue, setTitleValue] = useState("")
+  const { update, state } = useContext(ctx)
+  return (
+    <>
+      <Editor
+        onEditorInit={(editor) => {
+          newPostEditorRef.current = editor
+        }}
+        renderAbove={() => (
+          <InputWrapper>
+            <input
+              value={titleValue}
+              onChange={(e) => {
+                setTitleValue(e.target.value)
+              }}
+              placeholder="Input post title"
+              className="real-input"
+            />
+          </InputWrapper>
+        )}
+        renderBellow={() => (
+          <DoPostButton
+            className={btnStatus}
+            onClick={() => {
+              if (btnStatus !== "") return
+              setBtnStatus("connecting")
+              setTimeout(() => {
+                update({
+                  posts: [
+                    {
+                      postDate: format(new Date(), "MMM d, yyyy HH:mm"),
+                      title: titleValue,
+                      // @ts-ignore
+                      content: newPostEditorRef.current.getContent(),
+                    },
+                    ...state.posts,
+                  ],
+                })
+                setBtnStatus("")
+                setTitleValue("")
+                // @ts-ignore
+                newPostEditorRef.current.setContent("")
+              }, 1000)
+              // console.log(newPostEditorRef.current.getContent())
+            }}
+            style={{ marginTop: "24px" }}
+          >
+            {btnStatus === "" ? (
+              <>
+                <img
+                  src={checkBold.src}
+                  alt=""
+                  style={{ marginRight: "10px" }}
+                />
+                Post
+              </>
+            ) : (
+              "..."
+            )}
+          </DoPostButton>
+        )}
+      ></Editor>
+    </>
+  )
+}
+
+export default () => {
+  const [ctxState, set] = useState({
+    posts: [],
+  })
+  return (
+    <ctx.Provider
+      value={{
+        update: (newState) => {
+          set(newState)
+        },
+        state: ctxState,
+      }}
+    >
+      <App></App>
+    </ctx.Provider>
   )
 }

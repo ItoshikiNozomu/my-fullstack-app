@@ -15,11 +15,13 @@ export default ({
   renderBellow,
   wrapperStyle,
   onEditorInit,
+  initialValue
 }: {
   renderAbove: () => React.ReactNode
   renderBellow: () => React.ReactNode
   wrapperStyle?: React.CSSProperties
-  onEditorInit?: (editor) => void
+  onEditorInit?: (editor) => void,
+  initialValue?
 }) => {
   const editorRef = useRef(null)
   // const log = () => {
@@ -33,20 +35,21 @@ export default ({
       {renderAbove()}
       <Editor
         apiKey="your-api-key"
+        
         onInit={(evt, editor) => {
           editorRef.current = editor
 
           onEditorInit?.(editor)
         }}
-        initialValue="<p>This is the initial content of the editor.</p>"
+        initialValue={initialValue}
         init={{
           height: 500,
           menubar: false,
           external_plugins: {
             case: "/case-plugin.js",
           },
-          plugins: ["fullscreen", "code"],
-          toolbar: "fullscreen code bold italic underline case",
+          plugins: ["fullscreen", "code","lists"],
+          toolbar: "fullscreen code | bold italic underline case | alignleft aligncenter numlist blocks",
           content_style: `body { font-family:Popins,Arial,sans-serif; font-size:14px ;
               font-size: 14px;
               line-height: 21px;
@@ -65,7 +68,6 @@ export default ({
               line-height: 24px;
               color: #030303;
             }
-            
             `,
         }}
       />
