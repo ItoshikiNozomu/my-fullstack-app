@@ -13,6 +13,8 @@ import windowClose from "./resources/window-close.svg"
 import PostContainer from "./PostContainer"
 import Post1 from "./Post1"
 import { useRef } from "react"
+import Post2 from "./Post2"
+import Post3 from "./Post3"
 
 const PageContainer = styled.div`
   width: 1440px;
@@ -256,9 +258,9 @@ export default () => {
         </div>
       </TabSwitcher>
       <Editor
-      onEditorInit={(editor) => {
-        newPostEditorRef.current = editor
-      }}
+        onEditorInit={(editor) => {
+          newPostEditorRef.current = editor
+        }}
         renderAbove={() => (
           <InputWrapper>
             <input placeholder="Input post title" className="real-input" />
@@ -266,12 +268,12 @@ export default () => {
         )}
         renderBellow={() => (
           <DoPostButton
-          onClick={()=>{
-            // @ts-ignore
-            console.log(newPostEditorRef.current.getContent())
-            
-          }}
-          style={{ marginTop: "24px" }}>
+            onClick={() => {
+              // @ts-ignore
+              console.log(newPostEditorRef.current.getContent())
+            }}
+            style={{ marginTop: "24px" }}
+          >
             <img src={checkBold.src} alt="" style={{ marginRight: "10px" }} />{" "}
             Post
           </DoPostButton>
@@ -279,7 +281,6 @@ export default () => {
       ></Editor>
 
       <Editor
-        
         renderAbove={() => (
           <>
             <h5>Eidt Post</h5>
@@ -317,8 +318,24 @@ export default () => {
           marginTop: "60px",
         }}
         title="Orci varius natoque penatibus et magnis"
+        canDelete={false}
       >
         <Post1></Post1>
+      </PostContainer>
+      <PostContainer
+        postDate={"May 3, 2022 16:22"}
+        title="Proin laoreet semper"
+        canEdit={false}
+      >
+        <Post2></Post2>
+      </PostContainer>
+      <PostContainer
+        postDate={"May 3, 2022 16:22"}
+        title="Proin laoreet semper tortor ac posuere"
+        canEdit={false}
+        canDelete={false}
+      >
+        <Post3></Post3>
       </PostContainer>
     </PageContainer>
   )

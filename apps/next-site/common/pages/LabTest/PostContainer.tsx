@@ -57,6 +57,10 @@ const Container = styled.div`
     line-height: 18px;
     padding: 4px 16px;
     cursor: pointer;
+    &.disabled{
+      cursor:unset;
+      background: #C4C4C4;
+    }
   }
   .del-btn {
     display: flex;
@@ -64,10 +68,16 @@ const Container = styled.div`
     justify-content: center;
     width: 26px;
     height: 26px;
-    background: #c4c4c4;
     margin-left: 6px;
     border-radius: 100%;
     cursor: pointer;
+    background:#FF002E;
+    &.disabled{
+      cursor:unset;
+      background: #c4c4c4;
+    }
+    
+    
   }
   .post-date {
     font-family: "Poppins";
@@ -81,6 +91,7 @@ const Container = styled.div`
 
     color: #818181;
     margin-top:24px;
+    margin-left:25px;
   }
   & + & {
     margin-top: 60px;
@@ -92,21 +103,25 @@ export default ({
   containerStyle,
   children,
   postDate,
+  canEdit=true,
+  canDelete=true
 }: {
   title
   containerStyle?: CSSProperties
   children: ReactNode
-  postDate
+  postDate,
+  canEdit?
+  canDelete?
 }) => {
   return (
     <Container className="post-container" style={containerStyle}>
       <div className="title-and-actions">
         <div className="title">{title}</div>
         <div className="actions">
-          <span className="edit-btn">
+          <span className={`edit-btn ${canEdit?'':'disabled'}`}>
             <img src={pen.src} alt="" style={{ marginRight: "6px" }} /> Edit
           </span>
-          <span className="del-btn">
+          <span className={`del-btn ${canDelete?'':'disabled'}`}>
             <img src={trashCan.src} alt="" />
           </span>
           {/* <img src={trash.src} alt="" /> */}

@@ -34,7 +34,7 @@ const PostContainer = styled.div`
 `
 
 export default () => {
-  const imgs = [post11, post12, post13, post14]
+  const imgs = [post11, post13, post12, post14]
   return (
     <PostContainer>
       <div
