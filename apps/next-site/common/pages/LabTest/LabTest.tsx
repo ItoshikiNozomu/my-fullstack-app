@@ -24,6 +24,7 @@ const PageContainer = styled.div`
   * {
     box-sizing: border-box;
   }
+  padding-bottom:364px;
 `
 
 const Icon = styled.i``
