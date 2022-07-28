@@ -267,6 +267,7 @@ export default () => {
         renderBellow={() => (
           <DoPostButton
           onClick={()=>{
+            // @ts-ignore
             console.log(newPostEditorRef.current.getContent())
             
           }}
