@@ -4,4 +4,6 @@ module.exports = {
     "\\.[jt]sx?$": ["babel-jest", { "configFile": "./babel.jest.config.js" }]
    
   },
+  globalSetup:"./setup.jest.js",
+  globalTeardown:"./teardown.jest.js"
 }

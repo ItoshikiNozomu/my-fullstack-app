@@ -1,22 +1,28 @@
-import knex from "knex"
+import knex, { Knex } from "knex"
 
-const u = process.env.CLEARDB_DATABASE_URL.replace("mysql:", "http:")
+let db:Knex<any, unknown[]>
 
-// console.log(u,'=============')
+export const getDB = () => {
+  db = knex({
+    client: "pg",
+    connection: process.env.DATABASE_URL,
+  })
+  return db
+  // console.log(db)
+}
 
-const urlObj = new URL(u)
+export default db ? db : (db = getDB())
 
-let db = knex({
-  client: "mysql",
-  connection: {
-    database: urlObj.pathname.replace("/", "") ?? "img_crm",
-    host: urlObj.hostname ?? "172.25.53.171",
-    user: urlObj.username ?? "dev",
-    password: urlObj.password ?? "pwd",
-    port: 3306,
-  },
-})
 
-const getDB = () => db
+// export default getDB
 
-export default getDB
+// import { Pool, Client } from "pg"
+
+// export const test = async () => {
+//   const pool = new Pool({
+//     connectionString: "postgres://postgres:postgrespw@10.0.0.13:5432",
+//   })
+//   const results = await pool.query("SELECT NOW()")
+//   console.log(results)
+//   pool.end()
+// }
