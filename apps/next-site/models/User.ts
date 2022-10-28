@@ -1,17 +1,18 @@
-import getDB from "../utils/getDB"
+import db from "../utils/getDB"
 import { nanoid } from "nanoid"
 import crypto from "crypto"
 import jsonwebtoken from "jsonwebtoken"
 import { format } from "date-fns"
 
-const db = getDB()
+
+// const db = getDB()
 
 export type UserProps = {
-  userId: string
-  userName?: string
-  pwdHash?
-  pwdSalt?
-  createAt
+  user_id: string
+  user_name?: string
+  pwd_hash?
+  pwd_salt?
+  create_at
   mobile?: string
 }
 
@@ -29,17 +30,17 @@ export default class User {
       .toString("hex")
 
     const props = {
-      userId: id,
+      user_id: id,
 
-      userName,
-      pwdHash: hash,
-      pwdSalt: salt,
+      user_name:userName,
+      pwd_hash: hash,
+      pwd_salt: salt,
       // createAt: '2017-01-30 16:49:19',
-      createAt: format(Date.now(), "yyyy-MM-dd HH:mm:ss"),
+      create_at: format(Date.now(), "yyyy-MM-dd HH:mm:ss"),
     }
 
     try {
-      await db("users").insert([props])
+      await db('users').insert([props])
     } catch (e) {
       console.error(e)
       throw new Error(e)
@@ -51,21 +52,22 @@ export default class User {
 
   static async getUserByUserId(userId: string) {
     // todo
-    const userProps = (await db("users").where("userId", userId))[0]
-
-    const user = new User()
-    user.props = userProps
-    return user
+    const userProps = (await db('users').where("user_id", userId))[0]
+    if(!userProps)return null
+    return this.fromProps(userProps)
   }
-  static fromProps(props: UserProps) {
+  private static fromProps(props: UserProps) {
+    
     const u = new User()
-    delete props.pwdHash
-    delete props.pwdSalt
+    delete props.pwd_hash
+    delete props.pwd_salt
     u.props = props
-    u.token = jsonwebtoken.sign(props, "someSecret", { expiresIn: "10d" })
+    u.token = jsonwebtoken.sign(props, process.env.JWT_SECRET, {
+      expiresIn: "10d",
+    })
     return u
   }
-  static fromToken(token: string) {
+   static fromToken(token: string) {
     if (!token) return null
     const u = new User()
     u.token = token
@@ -74,18 +76,22 @@ export default class User {
     return u
   }
 
-  static async fromUserNameAndPwd(name, pwd) {
-    const rows = await db("users").where("userName", name)
-    const { pwdHash, pwdSalt, ...props } = rows[0]
+  static async getUserByNameAndPwd(name, pwd) {
+    const rows = await db('users').where("user_name", name)
+    const { pwd_hash, pwd_salt, ...props } = rows[0] as UserProps
     const inputHash = crypto
-      .pbkdf2Sync(pwd, pwdSalt, 1000, 64, "sha512")
+      .pbkdf2Sync(pwd, pwd_salt, 1000, 64, "sha512")
       .toString("hex")
-    if (inputHash === pwdHash) {
+    if (inputHash === pwd_hash) {
       return User.fromProps({ ...props })
     }
     throw new Error("user do not match")
   }
   static async removeUserById(id: string) {
-    await db("users").where("userId", id).del()
+    await db('users').where("user_id", id).del()
   }
 }
+
+
+
+

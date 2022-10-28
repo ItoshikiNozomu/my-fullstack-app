@@ -1,8 +1,9 @@
+SELECT 'CREATE DATABASE my_app' WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'my_app')\gexec
 CREATE TABLE users (
-    userId varchar(255) primary key,
-    userName varchar(255) unique,
+    user_id varchar(255) primary key,
+    user_name varchar(255) unique,
     mobile varchar(255),
-    pwdHash varchar(255),
-    pwdSalt varchar(255),
-    createAt datetime(3)
+    pwd_hash varchar(255),
+    pwd_salt varchar(255),
+    create_at timestamp
 );

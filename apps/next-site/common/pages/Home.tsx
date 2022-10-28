@@ -9,6 +9,7 @@ import SiteHead from "../components/SiteHead"
 import styled from "styled-components"
 import MyImgList from "../components/MyImgList"
 import { storeToIPFS } from "../../utils/ipfs"
+import useUploadFile from "common/hooks/useUploadFile"
 
 const StyledContainer = styled.div`
   padding: 20px;
@@ -41,13 +42,15 @@ const Home = (props: { user?: UserProps }) => {
     console.log(user)
   }, [user])
 
+  const uploadFn = useUploadFile()
+
   return (
     <StyledContainer>
       <div>
         Home
         {user && (
           <p>
-            username:{user.userName}
+            username:{user.user_name}
             <a
               href="#"
               onClick={async (e) => {
@@ -69,8 +72,13 @@ const Home = (props: { user?: UserProps }) => {
           onChange={async (evt) => {
             const r = new FileReader()
             // r.readAsArrayBuffer(evt.target.files[0])
-            const cid = await storeToIPFS(evt.target.files[0])
-            console.log(cid)
+            // const cid = await storeToIPFS(evt.target.files[0])
+            // console.log(cid)
+            const loc = await uploadFn({
+              file: evt.target.files[0],
+              name: evt.target.files[0].name,
+            })
+            console.log(loc)
           }}
         />
       </div>

@@ -1,17 +1,9 @@
-import knex, { Knex } from "knex"
+import knex from "knex"
 
-let db:Knex<any, unknown[]>
-
-export const getDB = () => {
-  db = knex({
-    client: "pg",
-    connection: process.env.DATABASE_URL,
-  })
-  return db
-  // console.log(db)
-}
-
-export default db ? db : (db = getDB())
+export default knex({
+  client: "pg",
+  connection: process.env.DATABASE_URL,
+})
 
 
 // export default getDB
