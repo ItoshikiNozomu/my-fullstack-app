@@ -1,57 +1,45 @@
+import { loginStatus, userPros } from "common/atoms"
 import { useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { AuthStatus, ReduxState } from "../../store"
-import checkAuth from "../../utils/checkAuth"
-import useLogin from "./useLogin"
+import { useRecoilState } from "recoil"
+import wrappedFetch from "utils/wrappedFetch"
+
+import useLogin from "./useLoginPrompt"
 
 export default (props?: { needLogin?; needVerify? }) => {
-  const { authToken, authStatus } = useSelector<
-    ReduxState,
-    { authToken; authStatus: AuthStatus }
-  >(({ authStatus, authToken }) => {
-    return { authToken, authStatus }
-  })
+  const [uProps, setUProps] = useRecoilState(userPros)
+  const [status, setStatus] = useRecoilState(loginStatus)
   const { showLoginModal } = useLogin()
-  const dispatch = useDispatch()
+
   const logout = async () => {
     await fetch("/api/logout", {
       method: "post",
     })
-    dispatch({
-      type: "authUpdate",
-      payload: {
-        token: "",
-        authStatus: "ANONYMOUS",
-      },
-    })
-    localStorage.removeItem("token")
+    setUProps(null)
+    setStatus("ANONYMOUS")
   }
   //   const { showPopup } = useLogin()
   useEffect(() => {
     ;(async () => {
-      const token = localStorage.getItem("token")
-      const { status } = await checkAuth(token)
-      dispatch({
-        type: "authUpdate",
-        payload: {
-          authStatus: status,
-          token: status !== "ANONYMOUS" ? token : "",
-        },
-      })
+      if (uProps === null) {
+        const authData = await wrappedFetch("/api/authentication")
+        setUProps(authData)
+        if (authData) {
+          setStatus("NOT_VERIFIED")
+        } else {
+          setStatus("ANONYMOUS")
+        }
+      }
     })()
   }, [])
 
   useEffect(() => {
-    if (authStatus === "ANONYMOUS" && props?.needLogin) {
-      //   showPopup()
-      // debugger
+    if (props.needLogin && status === "ANONYMOUS") {
       showLoginModal()
+    } else if (props.needVerify) {
     }
-  }, [props?.needLogin, authStatus])
+  }, [props?.needLogin, status])
 
   return {
-    authToken,
-    authStatus,
     logout,
   }
 }

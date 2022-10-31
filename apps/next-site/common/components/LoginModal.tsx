@@ -5,16 +5,20 @@ import { useForm } from "antd/lib/form/Form"
 import { createPortal } from "react-dom"
 import styled from "styled-components"
 import { useDispatch } from "react-redux"
+import { useSetRecoilState } from "recoil"
+import { loginStatus, userPros } from "common/atoms"
 
 const StyledForm = styled(Form)`
-background:#fff;
-padding:20px;
+  background: #fff;
+  padding: 20px;
 `
 
 const LoginForm: React.FC = () => {
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values)
   }
+  const setLoginStatus = useSetRecoilState(loginStatus)
+  const setUserProps = useSetRecoilState(userPros)
   // const dispatch = useDispatch()
   const [form] = useForm()
   return (
@@ -59,6 +63,7 @@ const LoginForm: React.FC = () => {
           onClick={async (e) => {
             //  console.log(form.getFieldsValue())
             let ret
+
             ret = await window
               .fetch("/api/login", {
                 method: "POST",
@@ -71,10 +76,9 @@ const LoginForm: React.FC = () => {
                 }
                 return r.json()
               })
-              
-            localStorage.setItem("token", ret.token)
-            
-            document.dispatchEvent(new CustomEvent("login"))
+
+            setLoginStatus("VERIFIED")
+            setUserProps(ret.props)
             // window.close()
           }}
           type="primary"
@@ -102,11 +106,10 @@ const StyledModalContainer = styled.div`
   align-items: center;
 `
 
-export default () => {
-  return createPortal(
-    <StyledModalContainer>
+export default ({ visible }) => {
+  return (
+    <StyledModalContainer style={{ display: visible ? "flex" : "none" }}>
       <LoginForm></LoginForm>
-    </StyledModalContainer>,
-    document.body
+    </StyledModalContainer>
   )
 }

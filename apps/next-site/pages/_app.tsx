@@ -4,6 +4,7 @@ import { wrapper } from "../store"
 import Head from "next/head"
 import Script from "next/script"
 import { RecoilRoot } from "recoil"
+import GlobalContainer from "common/components/GlobalContainer"
 
 const WrappedApp: FC<AppProps> = ({ Component, pageProps }) => (
   <>
@@ -12,6 +13,7 @@ const WrappedApp: FC<AppProps> = ({ Component, pageProps }) => (
     </Head>
     <RecoilRoot>
       <Component {...pageProps} />
+      <GlobalContainer></GlobalContainer>
     </RecoilRoot>
   </>
 )

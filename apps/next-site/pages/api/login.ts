@@ -10,7 +10,7 @@ const handler: NextApiHandler = async (req, res) => {
   let u: User
   try {
     const { username, password } = JSON.parse(req.body)
-    u = await User.fromUserNameAndPwd(username, password)
+    u = await User.getUserByNameAndPwd(username, password)
     res.setHeader(
       "set-cookie",
       //   `token=${encodeURIComponent(u.token)}; max-age=${24*10*60*60}; path=/`
@@ -20,9 +20,7 @@ const handler: NextApiHandler = async (req, res) => {
         maxAge: 24 * 10 * 60 * 60,
       })
     )
-    res.json({
-      token: u.token,
-    })
+    res.json(u)
   } catch (e) {
     // await User.removeUserById(u.props.userId)
     res.status(500)

@@ -3,5 +3,8 @@ export default (resource: RequestInfo, config?: RequestInit) =>
     if (!r.ok) {
       throw new Error(r.statusText)
     }
-    return r
+
+    
+    return r.json().then((json) => json )
+    
   })

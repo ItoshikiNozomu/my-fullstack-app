@@ -10,6 +10,8 @@ import styled from "styled-components"
 import MyImgList from "../components/MyImgList"
 import { storeToIPFS } from "../../utils/ipfs"
 import useUploadFile from "common/hooks/useUploadFile"
+import { useRecoilValue } from "recoil"
+import { userPros } from "common/atoms"
 
 const StyledContainer = styled.div`
   padding: 20px;
@@ -19,28 +21,8 @@ const Home = (props: { user?: UserProps }) => {
   const { logout } = useAuthentication({
     needLogin: true,
   })
-  const { authStatus, authToken } = useSelector<
-    ReduxState,
-    { authStatus: AuthStatus; authToken: string }
-  >(({ authStatus, authToken }) => {
-    // debugger
-    return { authStatus, authToken }
-  })
-  const [user, setUser] = useState<UserProps>()
 
-  useEffect(() => {
-    // debugger
-    if (props.user) {
-      setUser(props.user)
-    } else if (authStatus === "VERIFIED" || authStatus === "NOT_VERIFIED") {
-      // debugger
-      setUser(decode(authToken) as UserProps)
-    }
-  }, [authStatus, props.user])
-
-  useEffect(() => {
-    console.log(user)
-  }, [user])
+  const userProps = useRecoilValue(userPros)
 
   const uploadFn = useUploadFile()
 
@@ -48,15 +30,14 @@ const Home = (props: { user?: UserProps }) => {
     <StyledContainer>
       <div>
         Home
-        {user && (
+        {userProps && (
           <p>
-            username:{user.user_name}
+            username:{userProps.user_name}
             <a
               href="#"
               onClick={async (e) => {
                 e.preventDefault()
                 await logout()
-                setUser(undefined)
               }}
             >
               logout
