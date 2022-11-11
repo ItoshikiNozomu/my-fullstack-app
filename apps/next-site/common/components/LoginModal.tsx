@@ -6,7 +6,7 @@ import { createPortal } from "react-dom"
 import styled from "styled-components"
 import { useDispatch } from "react-redux"
 import { useSetRecoilState } from "recoil"
-import { loginStatus, userPros } from "common/atoms"
+import { loginStatus, userProps } from "client/atoms"
 
 const StyledForm = styled(Form)`
   background: #fff;
@@ -18,7 +18,7 @@ const LoginForm: React.FC = () => {
     console.log("Received values of form: ", values)
   }
   const setLoginStatus = useSetRecoilState(loginStatus)
-  const setUserProps = useSetRecoilState(userPros)
+  const setUserProps = useSetRecoilState(userProps)
   // const dispatch = useDispatch()
   const [form] = useForm()
   return (
@@ -65,7 +65,7 @@ const LoginForm: React.FC = () => {
             let ret
 
             ret = await window
-              .fetch("/api/login", {
+              .fetch("/api/-/login", {
                 method: "POST",
                 body: JSON.stringify(form.getFieldsValue()),
               })
@@ -78,7 +78,8 @@ const LoginForm: React.FC = () => {
               })
 
             setLoginStatus("VERIFIED")
-            setUserProps(ret.props)
+            setUserProps(ret)
+            form.resetFields()
             // window.close()
           }}
           type="primary"

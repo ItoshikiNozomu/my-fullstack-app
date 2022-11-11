@@ -1,4 +1,4 @@
-import { loginModalVisible } from "common/atoms"
+import { loginModalVisible } from "client/atoms"
 import { useRecoilValue } from "recoil"
 import LoginModal from "./LoginModal"
 

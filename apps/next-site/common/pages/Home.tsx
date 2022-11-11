@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import useAuthentication from "../hooks/useAuthentication"
+import useAuthentication from "../../client/hooks/useAuthentication"
 import User, { UserProps } from "../../models/User"
 import { AuthStatus, ReduxState } from "../../store"
 import { decode } from "jsonwebtoken"
@@ -9,9 +9,9 @@ import SiteHead from "../components/SiteHead"
 import styled from "styled-components"
 import MyImgList from "../components/MyImgList"
 import { storeToIPFS } from "../../utils/ipfs"
-import useUploadFile from "common/hooks/useUploadFile"
+import useUploadFile from "client/hooks/useUploadFile"
 import { useRecoilValue } from "recoil"
-import { userPros } from "common/atoms"
+import { loginStatus, userProps } from "client/atoms"
 
 const StyledContainer = styled.div`
   padding: 20px;
@@ -22,17 +22,23 @@ const Home = (props: { user?: UserProps }) => {
     needLogin: true,
   })
 
-  const userProps = useRecoilValue(userPros)
+  const userPropsVal = useRecoilValue(userProps)
+  const loginStatusVal = useRecoilValue(loginStatus)
+  const [uProps, setUProps] = useState(props.user)
 
   const uploadFn = useUploadFile()
+  useEffect(() => {
+    if(loginStatusVal!=="PENDING")
+    setUProps(userPropsVal)
+  }, [userPropsVal,loginStatusVal])
 
   return (
     <StyledContainer>
       <div>
         Home
-        {userProps && (
+        {uProps && (
           <p>
-            username:{userProps.user_name}
+            username:{uProps?.user_name}
             <a
               href="#"
               onClick={async (e) => {

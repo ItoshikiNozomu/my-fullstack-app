@@ -1,4 +1,4 @@
-import { loginStatus, userPros } from "common/atoms"
+import { loginStatus, userProps } from "client/atoms"
 import { useEffect } from "react"
 import { useRecoilState } from "recoil"
 import wrappedFetch from "utils/wrappedFetch"
@@ -6,7 +6,7 @@ import wrappedFetch from "utils/wrappedFetch"
 import useLogin from "./useLoginPrompt"
 
 export default (props?: { needLogin?; needVerify? }) => {
-  const [uProps, setUProps] = useRecoilState(userPros)
+  const [uProps, setUProps] = useRecoilState(userProps)
   const [status, setStatus] = useRecoilState(loginStatus)
   const { showLoginModal } = useLogin()
 
@@ -21,10 +21,10 @@ export default (props?: { needLogin?; needVerify? }) => {
   useEffect(() => {
     ;(async () => {
       if (uProps === null) {
-        const authData = await wrappedFetch("/api/authentication")
+        const authData = await wrappedFetch("/api/-/authentication")
         setUProps(authData)
         if (authData) {
-          setStatus("NOT_VERIFIED")
+          setStatus("VERIFIED")
         } else {
           setStatus("ANONYMOUS")
         }

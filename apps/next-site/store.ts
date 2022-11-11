@@ -4,7 +4,7 @@ import { AnyAction, Store } from "redux"
 import { createWrapper, Context, HYDRATE } from "next-redux-wrapper"
 import { configureStore } from "@reduxjs/toolkit"
 
-export type AuthStatus = "PENDING" | "ANONYMOUS" | "VERIFIED"|'NOT_VERIFIED'
+export type AuthStatus = "PENDING" | "ANONYMOUS" | "VERIFIED"
 
 export interface ReduxState {
   tick: string

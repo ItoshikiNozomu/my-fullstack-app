@@ -4,13 +4,15 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons"
 import { useForm } from "antd/lib/form/Form"
 import wrappedFetch from "../../utils/wrappedFetch"
 import getLogger from "../../utils/getLogger"
+import { useSetRecoilState } from "recoil"
+import { userProps } from "client/atoms"
 
 const App: React.FC = () => {
   const onFinish = (values: any) => {
     console.log("Received values of form: ", values)
   }
   const [form] = useForm()
-
+  const setUser = useSetRecoilState(userProps)
   return (
     <Form
       name="normal_login"
@@ -45,12 +47,13 @@ const App: React.FC = () => {
             //  console.log(form.getFieldsValue())
             let ret
             try {
-              ret = await wrappedFetch("/api/register", {
+              ret = await wrappedFetch("/api/-/register", {
                 method: "POST",
                 body: JSON.stringify(form.getFieldsValue()),
-              }).then((r) => r.json())
-              localStorage.setItem("token", ret.token)
+              })
+              // localStorage.setItem("token", ret.token)
               window.location.replace("/")
+              setUser(ret)
             } catch (e) {
               console.warn(e)
             }

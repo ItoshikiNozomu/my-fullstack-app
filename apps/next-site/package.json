@@ -10,6 +10,8 @@
     "test": "jest"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "jose": "^4.11.0"
+  }
 }
-

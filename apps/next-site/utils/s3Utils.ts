@@ -30,6 +30,7 @@ const client = new S3Client({
 export const getCredentials = async () => {
   const {
     Credentials,
+    
   } = await stsClient.send(new GetSessionTokenCommand({}))
   return Credentials
 }

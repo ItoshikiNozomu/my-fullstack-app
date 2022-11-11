@@ -5,7 +5,6 @@ export default knex({
   connection: process.env.DATABASE_URL,
 })
 
-
 // export default getDB
 
 // import { Pool, Client } from "pg"
