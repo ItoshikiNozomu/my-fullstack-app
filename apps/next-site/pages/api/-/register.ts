@@ -2,7 +2,7 @@ import { format } from "date-fns"
 import { STATUS_CODES } from "http"
 import { NextApiHandler } from "next"
 
-import User, { createUserByNameAndPwd, createUserToken, UserProps } from "models/User"
+import  { createUserByNameAndPwd, createUserToken, UserProps } from "models/User"
 import getLogger from "utils/getLogger"
 import { setCookieString } from "utils/httpUtils"
 
