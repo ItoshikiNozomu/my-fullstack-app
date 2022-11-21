@@ -25,3 +25,14 @@ CREATE TABLE user_file (
     file_desc varchar(255)
     
 );
+
+create TABLE user_post(
+    post_id VARCHAR(255) primary key,
+    author_user_id varchar(255),
+    create_date timestamp,
+    title varchar(100),
+    rich_text_content text,
+    last_mod_date timestamp,
+    visibility smallint
+    
+);

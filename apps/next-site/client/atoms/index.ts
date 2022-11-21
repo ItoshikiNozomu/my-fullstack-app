@@ -1,6 +1,5 @@
-import { Credentials } from "@aws-sdk/client-sts"
 import { UserProps } from "models/User"
-import { atom, useRecoilState } from "recoil"
+import { atom } from "recoil"
 // {
 //   credentials: {
 //     AccessKeyId: "ASIAVXKOQEVTWNB3TXQP",
@@ -29,9 +28,7 @@ export const userProps = atom<UserProps>({
   default: null,
 })
 
-export const loginStatus = atom<
-  "PENDING" | "ANONYMOUS" | "VERIFIED" 
->({
+export const loginStatus = atom<"PENDING" | "ANONYMOUS" | "VERIFIED">({
   key: "loginStatus",
   default: "PENDING",
 })

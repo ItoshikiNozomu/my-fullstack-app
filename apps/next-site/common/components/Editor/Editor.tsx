@@ -29,7 +29,10 @@ export default ({
   //     console.log(editorRef.current.getContent());
   //   }
   // };
-
+  useEffect(()=>{
+    document.body.style.overflow = 'auto'
+  },[])
+  
   return (
     <EditorWrapper className="editor-wrapper" style={wrapperStyle}>
       {renderAbove()}
@@ -40,6 +43,9 @@ export default ({
           editorRef.current = editor
 
           onEditorInit?.(editor)
+
+          
+          
         }}
         initialValue={initialValue}
         init={{
@@ -48,8 +54,8 @@ export default ({
           external_plugins: {
             case: "/case-plugin.js",
           },
-          plugins: ["fullscreen", "code","lists"],
-          toolbar: "fullscreen code | bold italic underline case | alignleft aligncenter numlist blocks",
+          plugins: ["fullscreen", "code","lists","image"],
+          toolbar: "fullscreen code | bold italic underline case | alignleft aligncenter numlist blocks image",
           content_style: `body { font-family:Popins,Arial,sans-serif; font-size:14px ;
               font-size: 14px;
               line-height: 21px;

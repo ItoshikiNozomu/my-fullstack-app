@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import useAuthentication from "../../client/hooks/useAuthentication"
-import User, { UserProps } from "../../models/User"
+import  { UserProps } from "../../models/User"
 import { AuthStatus, ReduxState } from "../../store"
 import { decode } from "jsonwebtoken"
 import Uploader from "../components/Uploader/Uploader"
@@ -12,6 +12,7 @@ import { storeToIPFS } from "../../utils/ipfs"
 import useUploadFile from "client/hooks/useUploadFile"
 import { useRecoilValue } from "recoil"
 import { loginStatus, userProps } from "client/atoms"
+import Link from "next/link"
 
 const StyledContainer = styled.div`
   padding: 20px;
@@ -48,6 +49,8 @@ const Home = (props: { user?: UserProps }) => {
             >
               logout
             </a>
+            &nbsp;
+            <Link href="/my-post">my post</Link>
           </p>
         )}
       </div>

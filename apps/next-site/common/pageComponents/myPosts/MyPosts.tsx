@@ -16,9 +16,11 @@ import { createContext, useContext, useRef, useState } from "react"
 import Post2 from "./Post2"
 import Post3, { SimplePost } from "./Post3"
 import { format } from "date-fns"
+import Link from "next/link"
+import wrappedFetch from "utils/wrappedFetch"
 
 const PageContainer = styled.div`
-  width: 1440px;
+  /* width: 1440px; */
   margin: auto;
   font-family: "Poppins";
   * {
@@ -230,18 +232,25 @@ export const ctx = createContext({
   },
 })
 
-const App = () => {
+const App = (props: {
+  data?: {
+    posts
+  }
+}) => {
   const { posts, editingPostTitle } = useContext(ctx).state
+
   return (
     <PageContainer>
-      <HDNav className="hd-nav">
-        <img
-          className="back-ic"
-          src={backIcon.src}
-          style={{ marginRight: "8px" }}
-        ></img>
-        Back
-      </HDNav>
+      <Link href={"/"}>
+        <HDNav className="hd-nav">
+          <img
+            className="back-ic"
+            src={backIcon.src}
+            style={{ marginRight: "8px" }}
+          ></img>
+          Back
+        </HDNav>
+      </Link>
 
       <MainTitle className="main-title">Manage post</MainTitle>
       <ProfileTip>
@@ -267,8 +276,9 @@ const App = () => {
           Posts <span className="count-tip">4</span>
         </div>
       </TabSwitcher>
+      {}
       <NewPostForm></NewPostForm>
-      {posts.map((e) => {
+      {/* {posts.map((e) => {
         return e.title === editingPostTitle ? (
           <EditingPostForm postData={e}></EditingPostForm>
         ) : (
@@ -299,7 +309,7 @@ const App = () => {
         canDelete={false}
       >
         <Post3></Post3>
-      </PostContainer>
+      </PostContainer> */}
     </PageContainer>
   )
 }
@@ -333,6 +343,15 @@ const NewPostForm = () => {
             onClick={() => {
               if (btnStatus !== "") return
               setBtnStatus("connecting")
+              wrappedFetch("/api/post", {
+                method: "PUT",
+                body: JSON.stringify({
+                  title: titleValue,
+                  richTextContent: newPostEditorRef.current.getContent(),
+                }),
+              }).then(json=>{
+                console.log(json)
+              })
               setTimeout(() => {
                 update({
                   posts: [

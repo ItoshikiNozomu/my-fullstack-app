@@ -13,7 +13,9 @@ it("test the static methods", async () => {
 
   expect((await getUserByNameAndPwd("tom", "123456")).user_name).toBe("tom")
   const ret = await updateUserPropsByUserId(u.user_id,{mobile:'18688394959'})
+  
   // console.log('updateeeeeeeee',ret)
+  // updateeeeeeeee [ { mobile: '18688394959' } ]
   expect((await getUserByUserId(u.user_id)).mobile).toBe("18688394959")
   await removeUserByUserId(u.user_id)
   expect(await getUserByUserId(u.user_id)).toBe(null)

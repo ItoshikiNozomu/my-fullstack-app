@@ -1,6 +1,6 @@
 import { CSSProperties, ReactNode, useContext } from "react"
 import styled from "styled-components"
-import { ctx } from "./LabTest"
+import { ctx } from "./MyPosts"
 
 import pen from "./resources/pencil.svg"
 import trashCan from "./resources/trash-can.svg"

@@ -1,3 +1,3 @@
-import Register from "../common/pages/Register"
+import Register from "../common/pageComponents/Register"
 
 export default () => <Register></Register>

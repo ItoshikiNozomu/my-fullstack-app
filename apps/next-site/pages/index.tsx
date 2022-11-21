@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next"
 
 import { fromToken, UserProps } from "models/User"
 
-import Home from "../common/pages/Home"
+import Home from "../common/pageComponents/Home"
 import SiteHead from "../common/components/SiteHead"
 
 

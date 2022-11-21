@@ -5,6 +5,8 @@ import { useEffect } from "react"
 import { useRecoilState, useRecoilValue } from "recoil"
 import wrappedFetch from "utils/wrappedFetch"
 
+const S3_KEY = "s3Config"
+
 const getS3ClientConfig = async () => {
   const ret = await wrappedFetch("/api/s3-config", {})
   localStorage.setItem("s3Config", JSON.stringify(ret))
@@ -18,7 +20,7 @@ export default () => {
   useEffect(() => {
     if (config === null && loginStatusVal === "VERIFIED") {
       const localConfig = JSON.parse(
-        localStorage.getItem("s3Config"),
+        localStorage.getItem(S3_KEY),
       ) as S3ClientConfigJSON
       ;(async () => {
         setConfig(
@@ -27,6 +29,8 @@ export default () => {
             : await getS3ClientConfig(),
         )
       })()
+    } else if (loginStatusVal === "ANONYMOUS") {
+      localStorage.removeItem(S3_KEY)
     }
   }, [loginStatusVal])
   useEffect(() => {
