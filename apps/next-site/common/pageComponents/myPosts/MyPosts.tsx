@@ -347,6 +347,7 @@ const NewPostForm = () => {
                 method: "PUT",
                 body: JSON.stringify({
                   title: titleValue,
+                  // @ts-ignore
                   richTextContent: newPostEditorRef.current.getContent(),
                 }),
               }).then(json=>{
