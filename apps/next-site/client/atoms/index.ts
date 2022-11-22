@@ -37,3 +37,8 @@ export const loginModalVisible = atom({
   key: "loginModalVisible",
   default: false,
 })
+
+export const editingPostId = atom({
+  key:'editingPostId',
+  default:null
+})

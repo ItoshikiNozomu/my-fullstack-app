@@ -21,13 +21,21 @@ export default (props?: { needLogin?; needVerify? }) => {
   useEffect(() => {
     ;(async () => {
       if (uProps === null) {
-        const authData = await wrappedFetch("/api/-/authentication")
-        setUProps(authData)
-        if (authData) {
-          setStatus("VERIFIED")
-        } else {
-          setStatus("ANONYMOUS")
-        }
+        const authData = await wrappedFetch("/api/authentication").then(
+          (authData) => {
+            setUProps(authData)
+            if (authData) {
+              setStatus("VERIFIED")
+            } else {
+              setStatus("ANONYMOUS")
+            }
+          },
+          (err) => {
+            // console.warn(err,'===============')
+            // debugger
+            showLoginModal()
+          },
+        )
       }
     })()
   }, [])

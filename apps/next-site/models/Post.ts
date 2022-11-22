@@ -27,10 +27,26 @@ export const createPost = async (
   return postProps
 }
 
-export const updatePost = () => {}
+export const updatePost = async ({ post_id, title, rich_text_content }) => {
+  return (await db("user_post")
+    .where({ post_id })
+    .update(
+      {
+        title,
+        rich_text_content,
+        last_mod_date: format(Date.now(), "yyyy-MM-dd HH:mm:ss"),
+      },
+      ["last_mod_date"],
+    ))[0]
+}
 
 export const findPostsByAuthorUser = async (userId) => {
-  return (await db("user_post").where({
+  const list = (await db("user_post").where({
     author_user_id: userId,
   })) as Array<PostProps>
+  list.forEach((e) => {
+    e.create_date = e.create_date + ""
+    e.last_mod_date = e.last_mod_date + ""
+  })
+  return list
 }

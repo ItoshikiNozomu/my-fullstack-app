@@ -9,14 +9,17 @@ export async function middleware(request: NextRequest) {
   const requestPath = request.nextUrl.pathname
   if (requestPath.startsWith("/api")) {
     if (!requestPath.startsWith("/api/-")) {
-      const jwtPayload = (
-        await jwtVerify(
+      let jwtVerifyRes
+      try {
+        jwtVerifyRes = await jwtVerify(
           request.cookies.get("token"),
           new TextEncoder().encode(process.env.JWT_SECRET),
         )
-      ).payload
-      console.log('jwtPayload',jwtPayload)
-      if (!jwtPayload) {
+      } catch (e) {
+        console.warn(e)
+      }
+
+      if (!jwtVerifyRes) {
         return NextResponse.rewrite(
           new URL(
             `/api/-/error-message?${new URLSearchParams({

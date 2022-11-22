@@ -1,6 +1,8 @@
+import { editingPostId } from "client/atoms"
 import { CSSProperties, ReactNode, useContext } from "react"
+import { useSetRecoilState } from "recoil"
 import styled from "styled-components"
-import { ctx } from "./MyPosts"
+// import { ctx } from "./MyPosts"
 
 import pen from "./resources/pencil.svg"
 import trashCan from "./resources/trash-can.svg"
@@ -102,6 +104,7 @@ export default ({
   postDate,
   canEdit = true,
   canDelete = true,
+  postId,
 }: {
   title
   containerStyle?: CSSProperties
@@ -109,9 +112,10 @@ export default ({
   postDate
   canEdit?
   canDelete?
+  postId
 }) => {
-  const { update, state } = useContext(ctx)
-
+  // const { update, state } = useContext(ctx)
+  const setEditingPostId = useSetRecoilState(editingPostId)
   return (
     <Container className="post-container" style={containerStyle}>
       <div className="title-and-actions">
@@ -120,10 +124,7 @@ export default ({
           <span
             className={`edit-btn ${canEdit ? "" : "disabled"}`}
             onClick={() => {
-              update({
-                ...state,
-                editingPostTitle: title,
-              })
+              setEditingPostId(postId)
             }}
           >
             <img src={pen.src} alt="" style={{ marginRight: "6px" }} /> Edit

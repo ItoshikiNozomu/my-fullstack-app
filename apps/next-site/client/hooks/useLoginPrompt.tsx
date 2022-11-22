@@ -12,6 +12,7 @@ export default () => {
 
   const loginStatusVal = useRecoilValue(loginStatus)
   const showLoginModal = () => {
+    
     if (!loginModalVis) {
       setLoginModalVis(true)
     }

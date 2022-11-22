@@ -1,5 +1,5 @@
 import { decodeJwt } from "jose"
-import { createPost, findPostsByAuthorUser } from "models/Post"
+import { createPost, findPostsByAuthorUser, updatePost } from "models/Post"
 import { fromToken } from "models/User"
 import { NextApiHandler } from "next"
 import { NextRequest } from "next/server"
@@ -7,7 +7,7 @@ import getLogger from "utils/getLogger"
 
 const handler: NextApiHandler = async (req, resp) => {
   const user = fromToken(req.cookies.token)
- 
+
   if (req.method === "PUT") {
     const { title, richTextContent } = JSON.parse(req.body)
 
@@ -35,6 +35,14 @@ const handler: NextApiHandler = async (req, resp) => {
     // createPost({})
   } else if (req.method === "GET") {
     resp.json(await findPostsByAuthorUser(user.user_id))
+  } else if (req.method === "POST") {
+    const { title, richTextContent, postId } = JSON.parse(req.body)
+    const result = await updatePost({
+      title,
+      rich_text_content: richTextContent,
+      post_id: postId,
+    })
+    resp.json(result)
   }
 }
 
