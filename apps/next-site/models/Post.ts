@@ -28,22 +28,32 @@ export const createPost = async (
 }
 
 export const updatePost = async ({ post_id, title, rich_text_content }) => {
-  return (await db("user_post")
-    .where({ post_id })
-    .update(
-      {
-        title,
-        rich_text_content,
-        last_mod_date: format(Date.now(), "yyyy-MM-dd HH:mm:ss"),
-      },
-      ["last_mod_date"],
-    ))[0]
+  return (
+    await db("user_post")
+      .where({ post_id })
+      .update(
+        {
+          title,
+          rich_text_content,
+          last_mod_date: format(Date.now(), "yyyy-MM-dd HH:mm:ss"),
+        },
+        ["last_mod_date"],
+      )
+  )[0]
 }
 
-export const findPostsByAuthorUser = async (userId) => {
-  const list = (await db("user_post").where({
-    author_user_id: userId,
-  })) as Array<PostProps>
+export const findPostsByAuthorUser = async (
+  userId,
+  order?: {
+    dir: "asc" | "desc"
+    by
+  },
+) => {
+  const list = (await db("user_post")
+    .where({
+      author_user_id: userId,
+    })
+    .orderBy("create_date", "desc")) as Array<PostProps>
   list.forEach((e) => {
     e.create_date = e.create_date + ""
     e.last_mod_date = e.last_mod_date + ""

@@ -1,5 +1,10 @@
 import { decodeJwt } from "jose"
-import { createPost, findPostsByAuthorUser, updatePost } from "models/Post"
+import {
+  createPost,
+  findPostsByAuthorUser,
+  PostProps,
+  updatePost,
+} from "models/Post"
 import { fromToken } from "models/User"
 import { NextApiHandler } from "next"
 import { NextRequest } from "next/server"
@@ -11,7 +16,7 @@ const handler: NextApiHandler = async (req, resp) => {
   if (req.method === "PUT") {
     const { title, richTextContent } = JSON.parse(req.body)
 
-    let post
+    let post: Partial<PostProps>
     try {
       post = await createPost({
         title,
@@ -27,9 +32,9 @@ const handler: NextApiHandler = async (req, resp) => {
       })
     }
     if (post) {
-      resp.json({
-        postId: post.post_id,
-      })
+      post.rich_text_content = ""
+      
+      resp.json(post)
     }
 
     // createPost({})

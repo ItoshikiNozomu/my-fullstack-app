@@ -1,6 +1,6 @@
 import styled from "styled-components"
-import Editor from "../../components/Editor/Editor"
-
+import WrappedEditor from "../../components/Editor/Editor"
+import { Editor as TMCEditor } from "tinymce/tinymce"
 import backIcon from "./resources/arrow-left.svg"
 
 import checkIcon from "./resources/check-circle.svg"
@@ -88,13 +88,14 @@ const BtnRow = styled.div`
   }
 `
 export const NewPostForm = () => {
-  const newPostEditorRef = useRef()
+  const newPostEditorRef = useRef<TMCEditor>()
   const [btnStatus, setBtnStatus] = useState("")
   const [titleValue, setTitleValue] = useState("")
+  const { createPost } = usePosts()
   // const { update, state } = useContext(ctx)
   return (
     <>
-      <Editor
+      <WrappedEditor
         onEditorInit={(editor) => {
           newPostEditorRef.current = editor
         }}
@@ -113,37 +114,14 @@ export const NewPostForm = () => {
         renderBellow={() => (
           <DoPostButton
             className={btnStatus}
-            onClick={() => {
+            onClick={async () => {
               if (btnStatus !== "") return
               setBtnStatus("connecting")
-              wrappedFetch("/api/post", {
-                method: "PUT",
-                body: JSON.stringify({
-                  title: titleValue,
-                  // @ts-ignore
-                  richTextContent: newPostEditorRef.current.getContent(),
-                }),
-              }).then((json) => {
-                console.log(json)
-              })
-              // setTimeout(() => {
-              //   update({
-              //     posts: [
-              //       {
-              //         postDate: format(new Date(), "MMM d, yyyy HH:mm"),
-              //         title: titleValue,
-              //         // @ts-ignore
-              //         content: newPostEditorRef.current.getContent(),
-              //       },
-              //       ...state.posts,
-              //     ],
-              //   })
-              //   setBtnStatus("")
-              //   setTitleValue("")
-              //   // @ts-ignore
-              //   newPostEditorRef.current.setContent("")
-              // }, 1000)
-              // console.log(newPostEditorRef.current.getContent())
+              await createPost(titleValue, newPostEditorRef.current)
+              setBtnStatus("")
+              setTitleValue("")
+
+              newPostEditorRef.current.setContent("")
             }}
             style={{ marginTop: "24px" }}
           >
@@ -161,7 +139,7 @@ export const NewPostForm = () => {
             )}
           </DoPostButton>
         )}
-      ></Editor>
+      ></WrappedEditor>
     </>
   )
 }
@@ -172,12 +150,12 @@ export const EditingPostForm = ({
   postData: { title; content; postId }
 }) => {
   // const { state, update } = useContext(ctx)
-  const newPostEditorRef = useRef()
+  const newPostEditorRef = useRef<TMCEditor>()
   const [titleValue, setTitleValue] = useState(postData.title)
   const { updatePost } = usePosts()
   const setEditingPostId = useSetRecoilState(editingPostId)
   return (
-    <Editor
+    <WrappedEditor
       onEditorInit={(editor) => {
         newPostEditorRef.current = editor
       }}
@@ -239,6 +217,6 @@ export const EditingPostForm = ({
         borderRadius: "5px",
         overflow: "hidden",
       }}
-    ></Editor>
+    ></WrappedEditor>
   )
 }

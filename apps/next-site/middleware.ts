@@ -20,7 +20,7 @@ export async function middleware(request: NextRequest) {
       }
 
       if (!jwtVerifyRes) {
-        return NextResponse.rewrite(
+        const rewrite = NextResponse.rewrite(
           new URL(
             `/api/-/error-message?${new URLSearchParams({
               message: "user invalid",
@@ -29,8 +29,11 @@ export async function middleware(request: NextRequest) {
           ),
           {
             status: 401,
+            
           },
         )
+        rewrite.cookies.set("token", "", { maxAge: -1 })
+        return rewrite
       }
     }
   }

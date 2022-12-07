@@ -13,12 +13,13 @@ import useS3 from "./useS3"
 export default () => {
   const [s3Client, s3Config] = useS3()
   const userPropsVal = useRecoilValue(userProps)
-  return async ({ file, name }: { file: File; name: string }) => {
+  return async ({ file, name }: { file: File | Blob; name: string }) => {
+    const fileKey = `${userPropsVal.user_id}-${Date.now()}-${name}`
     if (s3Client && s3Config) {
       const { UploadId } = await s3Client.send(
         new CreateMultipartUploadCommand({
           Bucket: s3Config.bucket,
-          Key: `${userPropsVal.user_id}-${name}`,
+          Key: fileKey,
         }),
       )
 
@@ -27,7 +28,7 @@ export default () => {
           UploadId,
           Body: file,
           Bucket: s3Config.bucket,
-          Key: name,
+          Key: fileKey,
           // todo
           PartNumber: 1,
         }),
@@ -37,21 +38,22 @@ export default () => {
         new CompleteMultipartUploadCommand({
           UploadId,
           Bucket: s3Config.bucket,
-          Key: name,
+          Key: fileKey,
           MultipartUpload: {
             // todo  the etag was generated at uploadpart
             Parts: [{ PartNumber: 1, ETag }],
           },
         }),
       )
-      wrappedFetch("/api/user-upload", {
-        method: "post",
+      wrappedFetch("/api/user-resource", {
+        method: "put",
         body: JSON.stringify({
           fileUrl: Location,
-          
+          fileName:fileKey
         }),
       })
-      return Location
+      return [Location,fileKey]
     }
+    
   }
 }

@@ -23,6 +23,8 @@ import { NewPostForm } from "./EditorForm"
 import useAuthentication from "client/hooks/useAuthentication"
 import { useSetRecoilState } from "recoil"
 import { editingPostId } from "client/atoms"
+import useS3 from "client/hooks/useS3"
+import S3Img from "common/components/S3Img"
 
 const PageContainer = styled.div`
   /* width: 1440px; */
@@ -164,16 +166,14 @@ const TabSwitcher = styled.div`
   }
 `
 
-
-
-
 const App = (props: {
   data?: {
     posts
   }
 }) => {
   // const { posts, editingPostTitle } = useContext(ctx).state
-  
+  const [, , getUrl] = useS3()
+
   return (
     <PageContainer>
       <Link href={"/"}>
@@ -213,19 +213,18 @@ const App = (props: {
       </TabSwitcher>
       <PostList postData={props.data?.posts}></PostList>
       <NewPostForm></NewPostForm>
+      
     </PageContainer>
   )
 }
 
-
-
 export default (props: { data? }) => {
   const setEditingPostId = useSetRecoilState(editingPostId)
-  useAuthentication({needLogin:true})
-  useEffect(()=>{
-    return ()=>{
+  useAuthentication({ needLogin: true })
+  useEffect(() => {
+    return () => {
       setEditingPostId(null)
     }
-  },[])
+  }, [])
   return <App data={props.data}></App>
 }

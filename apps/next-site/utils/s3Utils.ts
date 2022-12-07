@@ -7,10 +7,12 @@ import {
   CreateMultipartUploadCommand,
   CompleteMultipartUploadCommand,
   S3ClientConfig,
+  GetObjectCommand,
 } from "@aws-sdk/client-s3"
 import { createReadStream, ReadStream } from "fs"
 import { nanoid } from "nanoid"
 import { GetSessionTokenCommand, STSClient } from "@aws-sdk/client-sts"
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner"
 const stsClient = new STSClient({
   region: process.env.AWS_S3_REGION,
   credentials: {
@@ -28,10 +30,7 @@ const client = new S3Client({
 })
 
 export const getCredentials = async () => {
-  const {
-    Credentials,
-    
-  } = await stsClient.send(new GetSessionTokenCommand({}))
+  const { Credentials } = await stsClient.send(new GetSessionTokenCommand({}))
   return Credentials
 }
 
@@ -72,4 +71,16 @@ export const simpleUpload = async ({
     }),
   )
   return Location
+}
+
+export const getObjectUrl = async (key, contentType?) => {
+  const command = new GetObjectCommand({
+    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Key: key,
+    // todo
+    ResponseContentType: contentType ?? "image/png",
+  })
+  const url = await getSignedUrl(client, command, { expiresIn: 3600 })
+
+  return url
 }
