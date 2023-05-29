@@ -64,11 +64,11 @@ const Home = (props: { user?: UserProps }) => {
             // r.readAsArrayBuffer(evt.target.files[0])
             // const cid = await storeToIPFS(evt.target.files[0])
             // console.log(cid)
-            const loc = await uploadFn({
+            const [loc] = await uploadFn({
               file: evt.target.files[0],
               name: evt.target.files[0].name,
             })
-            console.log(loc)
+            
           }}
         />
       </div>
